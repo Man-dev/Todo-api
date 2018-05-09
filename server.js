@@ -35,28 +35,6 @@ app.get('/todos', function(req, res) {
 	}, function(e){
 		res.status(500).send();
 	});
-
-	// var queryParams = req.query;
-	// var filteredTodos = todos;
-	// if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
-	// 	filteredTodos = _.where(filteredTodos, {
-	// 		completed: true
-	// 	});
-	// } else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
-	// 	filteredTodos = _.where(filteredTodos, {
-	// 		completed: false
-	// 	});
-	// }
-
-	// if (queryParams.hasOwnProperty('q') && queryParams.q.trim().length > 0) {
-	// 	filteredTodos = _.filter(filteredTodos, function(todo) {
-	// 		if (todo.description.toLowerCase().indexOf(queryParams.q.toLowerCase()) > -1) {
-	// 			return todo;
-	// 		}
-	// 	});
-	// }
-
-	// res.json(filteredTodos);
 });
 
 app.get('/todos/:id', function(req, res) {
@@ -81,17 +59,6 @@ app.post('/todos', function(req, res) {
 	}, function(e) {
 		res.send(400).json(e);
 	});
-
-
-	// body = _.pick(body, 'description', 'completed');
-	// if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
-	// 	res.status(404).send();
-	// } else {
-	// 	body.description = body.description.trim();
-	// 	body.id = todoNextId++;
-	// 	todos.push(body);
-	// 	res.json(body);
-	// }
 });
 
 app.delete('/todos/:id', function(req, res) {
