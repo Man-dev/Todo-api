@@ -59,17 +59,12 @@ app.get('/todos/:id', function(req, res) {
 
 
 app.post('/todos', function(req, res) {
-	var body = req.body;
-	db.todo.create({
-		description: body.description,
-		completed: body.completed
-	}).then(function(todo){
-		todos.push(todo);
-		res.json(todo.toJSON());
-	}).catch(function (e){
-		res.status(400).JSON(e);
+	var body = _.pick(req.body, 'description', 'completed');
+	db.todo.create(body).then(function(todo) {
+		res.json(todo);
+	}, function(e) {
+		res.send(400).json(e);
 	});
-
 
 
 	// body = _.pick(body, 'description', 'completed');
