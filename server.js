@@ -20,7 +20,7 @@ app.get('/todos', function(req, res) {
 	var where = {};
 	if (query.hasOwnProperty('completed') && query.completed === 'true') {
 		where.completed = true;
-	} else if(query.hasOwnProperty('completed') && query.completed === 'false'){
+	} else if (query.hasOwnProperty('completed') && query.completed === 'false') {
 		where.completed = false;
 	}
 
@@ -30,9 +30,11 @@ app.get('/todos', function(req, res) {
 		}
 	}
 
-	db.todo.findAll({where: where}).then(function (todos){
+	db.todo.findAll({
+		where: where
+	}).then(function(todos) {
 		res.json(todos);
-	}, function(e){
+	}, function(e) {
 		res.status(500).send();
 	});
 });
@@ -54,7 +56,9 @@ app.get('/todos/:id', function(req, res) {
 
 app.post('/todos', function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed');
-	db.todo.create(body).then(function(todo) {
+	var todos = db.todo;
+
+	todos.create(body).then(function(todo) {
 		res.json(todo);
 	}, function(e) {
 		res.send(400).json(e);
@@ -63,18 +67,18 @@ app.post('/todos', function(req, res) {
 
 app.delete('/todos/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
-	var match = _.findWhere(todos, {
-		id: todoId
-	});
-	if (!match) {
-		res.status(404).json({
-			"error": "no todo found with that id"
-		});
-	} else {
-		todos = _.without(todos, match);
-		res.json(match);
-	}
-
+	db.todo.findById(todoId).then(function(todo) {
+		if (!!todo) {
+			todo.destroy().then(function() {
+				res.json({
+					"Deleted Item": todo
+				});
+			});
+		}
+		else {
+			res.json("Couldn\'t find any item by that id.");
+		}
+	})
 });
 
 app.put('/todos/:id', function(req, res) {
