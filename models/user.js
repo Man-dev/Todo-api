@@ -12,7 +12,15 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING,
 			allowNull: false,
 			validate: {
-			len: [8, 30]
+				len: [8, 30]
+			}
+		}
+	}, {
+		hooks: {
+			beforeValidate: function(user, options) {
+				if (typeof user.email === 'string') {
+					user.email = user.email.toLowerCase();
+				}
 			}
 		}
 	});
