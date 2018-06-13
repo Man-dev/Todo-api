@@ -58,10 +58,13 @@ app.get('/todos/:id', middleware.requireAuthentication, function(req, res) {
 
 app.post('/todos', middleware.requireAuthentication, function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed');
-	var todos = db.todo;
 
-	todos.create(body).then(function(todo) {
-		res.json(todo);
+	db.todo.create(body).then(function(todo) {
+		req.user.addTodo(todo).then(function() {
+			return todo.reload();
+		}).then(function(todo) {
+			res.json(todo.toJSON());
+		});
 	}, function(e) {
 		res.send(400).json(e);
 	});
@@ -123,9 +126,9 @@ app.post('/users/login', function(req, res) {
 
 	db.user.authenticate(body).then(function(user) {
 		var token = user.generateToken('authentication');
-		if(!token){
-			res.status(401).send(e);	
-		} else{
+		if (!token) {
+			res.status(401).send(e);
+		} else {
 			res.header('Auth', token).json(user.toPublicJSON());
 		}
 	}, function(e) {
